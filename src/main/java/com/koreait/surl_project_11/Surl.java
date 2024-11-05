@@ -1,11 +1,14 @@
 package com.koreait.surl_project_11;
 
+import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class Surl {
     private long id;
@@ -15,4 +18,11 @@ public class Surl {
     private LocalDateTime modifyDate = LocalDateTime.now();
     private String body;
     private String url;
+    @Setter(AccessLevel.NONE)
+    private long count;
+
+    public void increaseCount() {
+        count++;
+    }
+
 }
