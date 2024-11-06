@@ -1,1 +1,3 @@
-spring.application.name=Surl_project_11
+server:
+  port: 77
+  address: 0.0.0.0
