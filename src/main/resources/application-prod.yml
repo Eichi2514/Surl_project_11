@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8080
 custom:
   site:
     name: "My Site Prod"
