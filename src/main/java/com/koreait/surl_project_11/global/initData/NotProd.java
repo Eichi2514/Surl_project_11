@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 // !prod == dev or test
 @Profile("!prod")
@@ -42,8 +43,8 @@ public class NotProd {
 
         //articleRepository.deleteAll();
 
-        Article article1 = Article.builder().
-                title("제목1")
+        Article article1 = Article.builder()
+                .title("제목1")
                 .body("내용1").build();
 
         Article article2 = Article.builder().
