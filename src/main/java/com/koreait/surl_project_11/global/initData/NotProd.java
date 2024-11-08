@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 // !prod == dev or test
 @Profile("!prod")
@@ -68,5 +67,8 @@ public class NotProd {
 
         List<Article> articles = articleRepository.findAll(); // JpaRepository 기본 제공
 
+        List<Article> articlesById = articleRepository.findByIdInOrderByTitleDescIdAsc(List.of(1L, 2L, 3L));
+        articleRepository.findByTitleContaining("안녕");
+        articleRepository.findByTitleAndBody("안녕", "잘가");
     }
 }
