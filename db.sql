@@ -8,12 +8,14 @@ show tables;
 
 desc article;
 
-TRUNCATE article
+TRUNCATE article;
 
 SELECT *
-FROM article
+FROM article;
 
-         TRUNCATE member
+desc member;
+
+TRUNCATE member;
 
 SELECT *
-FROM member
+FROM member;

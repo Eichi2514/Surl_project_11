@@ -4,6 +4,7 @@ import com.koreait.surl_project_11.domain.article.article.entity.Article;
 import com.koreait.surl_project_11.domain.article.article.service.ArticleService;
 import com.koreait.surl_project_11.domain.member.member.entity.Member;
 import com.koreait.surl_project_11.domain.member.member.service.MemberService;
+import com.koreait.surl_project_11.global.exceptions.GlobalException;
 import com.koreait.surl_project_11.global.rsData.RsData;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,6 @@ public class NotProd {
         return args -> {
             self.work1();
             self.work2();
-            self.work3();
         };
     }
 
@@ -48,9 +48,13 @@ public class NotProd {
 
         Member member1 = memberService.join("user1", "1234", "유저 1").getData();
         Member member2 = memberService.join("user2", "1234", "유저 2").getData();
-        RsData<Member> joinRs = memberService.join("user2", "1234", "유저 2");
-        System.out.println("joinRs.getMsg() : " + joinRs.getMsg());
-        System.out.println("joinRs.getStatusCode() : " + joinRs.getStatusCode());
+
+        try {
+            RsData<Member> joinRs = memberService.join("user2", "1234", "유저 2");
+        } catch (GlobalException e) {
+            System.out.println("e.getMsg() : " + e.getRsData().getMsg());
+            System.out.println("e.getStatusCode() : " + e.getRsData().getStatusCode());
+        }
 
         Article article1 = articleService.write("제목 1", "내용 1").getData();
         Article article2 = articleService.write("제목 2", "내용 2").getData();
@@ -67,12 +71,5 @@ public class NotProd {
         Optional<Article> opArticle = articleService.findById(2L); // JpaRepository 기본 제공
 
         List<Article> articles = articleService.findAll(); // JpaRepository 기본 제공
-    }
-
-    @Transactional
-    public void work3() {
-        RsData<Member> joinRs = memberService.join("user2", "1234", "유저 2");
-        System.out.println("joinRs.getMsg() : " + joinRs.getMsg());
-        System.out.println("joinRs.getStatusCode() : " + joinRs.getStatusCode());
     }
 }
