@@ -2,7 +2,10 @@ package com.koreait.surl_project_11.domain.article.article.entity;
 
 import com.koreait.surl_project_11.domain.member.member.entity.Member;
 import com.koreait.surl_project_11.global.jpa.entity.BaseTime;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,16 +23,6 @@ public class Article extends BaseTime {
     @Column(columnDefinition = "TEXT")
     private String body;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @Transient
-    private String extra__author;
-
-    public void setExtra__author() {
-        if (member != null) {
-            this.extra__author = member.getNickname();
-        }
-    }
+    @ManyToOne
+    private Member author;
 }
