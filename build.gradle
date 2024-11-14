@@ -35,9 +35,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     runtimeOnly 'com.h2database:h2'
 
-    developmentOnly 'org.springframework.boot:spring-boot-starter-actuator'
-    developmentOnly 'org.springframework.boot:spring-boot-starter-data-redis'
-    developmentOnly 'org.springframework.boot:spring-boot-session-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.session:spring-session-data-redis'
 }
 
 tasks.named('test') {
