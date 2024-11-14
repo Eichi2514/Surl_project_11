@@ -15,7 +15,7 @@ class ServiceManager:
         self.services: Dict[str, int] = {
             'surl_1': 8082,
             'surl_2': 8083
-        }
+        }cl
         self.current_name: Optional[str] = None
         self.current_port: Optional[int] = None
         self.next_name: Optional[str] = None
