@@ -4,7 +4,7 @@ import com.koreait.surl_project_11.domain.member.member.entity.Member;
 import com.koreait.surl_project_11.domain.member.member.service.MemberService;
 import com.koreait.surl_project_11.global.rsData.RsData;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +23,31 @@ public class ApiV1MemberController {
 
     @AllArgsConstructor
     @Getter
-    public static class MemberJoinReqBody{
-        @NotBlank(message = "username 입력하세요")
+    public static class MemberJoinReqBody {
+
+        @NotBlank
+        @Pattern(regexp = "^[^\\s]+$")
         private String username;
-        @NotBlank(message = "password 입력하세요")
+
+        @NotBlank
+        @Pattern(regexp = "^[^\\s]+$")
         private String password;
-        @NotBlank(message = "nickname 입력하세요")
+
+        @NotBlank
         private String nickname;
     }
 
     // POST /api/v1/members
     @PostMapping("")
     public RsData<Member> join(
-            @RequestBody @Valid MemberJoinReqBody reqBody
+            @RequestBody @Valid MemberJoinReqBody requestBody
     ) {
-        return memberService.join(reqBody.username, reqBody.password, reqBody.nickname);
+
+        int a = 40;
+        int b = 0;
+        int c = a / b;
+
+        return memberService.join(requestBody.username, requestBody.password, requestBody.nickname);
     }
+
 }
