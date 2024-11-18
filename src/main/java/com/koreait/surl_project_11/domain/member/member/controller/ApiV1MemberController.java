@@ -37,17 +37,21 @@ public class ApiV1MemberController {
         private String nickname;
     }
 
-    // POST /api/v1/members
-    @PostMapping("")
-    public RsData<Member> join(
-            @RequestBody @Valid MemberJoinReqBody requestBody
-    ) {
-
-        int a = 40;
-        int b = 0;
-        int c = a / b;
-
-        return memberService.join(requestBody.username, requestBody.password, requestBody.nickname);
+    @AllArgsConstructor
+    @Getter
+    public static class MemberJoinRespBody {
+        Member item;
     }
 
+    // POST /api/v1/members
+    @PostMapping("")
+    public RsData<MemberJoinRespBody> join(
+            @RequestBody @Valid MemberJoinReqBody requestBody
+    ) {
+        RsData<Member> joinRs = memberService.join(requestBody.username, requestBody.password, requestBody.nickname);
+
+        return joinRs.newDataOf(
+                new MemberJoinRespBody(joinRs.getData())
+        );
+    }
 }
