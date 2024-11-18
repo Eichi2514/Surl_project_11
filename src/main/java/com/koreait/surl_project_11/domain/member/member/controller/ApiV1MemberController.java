@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,13 +46,16 @@ public class ApiV1MemberController {
 
     // POST /api/v1/members
     @PostMapping("")
-    public RsData<MemberJoinRespBody> join(
+    public ResponseEntity<RsData<MemberJoinRespBody>> join(
             @RequestBody @Valid MemberJoinReqBody requestBody
     ) {
         RsData<Member> joinRs = memberService.join(requestBody.username, requestBody.password, requestBody.nickname);
 
-        return joinRs.newDataOf(
-                new MemberJoinRespBody(joinRs.getData())
-        );
+        return ResponseEntity
+                .status(joinRs.getStatusCode())
+                .body(
+                        joinRs.newDataOf(
+                        new MemberJoinRespBody(joinRs.getData())
+                ));
     }
 }
