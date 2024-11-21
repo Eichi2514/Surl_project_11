@@ -4,12 +4,11 @@ import com.koreait.surl_project_11.domain.member.member.entity.Member;
 import com.koreait.surl_project_11.domain.member.member.service.MemberService;
 import com.koreait.surl_project_11.global.rsData.RsData;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,15 +24,10 @@ public class ApiV1MemberController {
     @AllArgsConstructor
     @Getter
     public static class MemberJoinReqBody {
-
         @NotBlank
-        @Pattern(regexp = "^[^\\s]+$")
         private String username;
-
         @NotBlank
-        @Pattern(regexp = "^[^\\s]+$")
         private String password;
-
         @NotBlank
         private String nickname;
     }
@@ -46,16 +40,13 @@ public class ApiV1MemberController {
 
     // POST /api/v1/members
     @PostMapping("")
-    public ResponseEntity<RsData<MemberJoinRespBody>> join(
+    public RsData<MemberJoinRespBody> join(
             @RequestBody @Valid MemberJoinReqBody requestBody
     ) {
         RsData<Member> joinRs = memberService.join(requestBody.username, requestBody.password, requestBody.nickname);
 
-        return ResponseEntity
-                .status(joinRs.getStatusCode())
-                .body(
-                        joinRs.newDataOf(
-                        new MemberJoinRespBody(joinRs.getData())
-                ));
+        return joinRs.newDataOf(
+                new MemberJoinRespBody(joinRs.getData())
+        );
     }
 }
