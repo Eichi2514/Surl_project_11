@@ -13,12 +13,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/surls")
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class ApiV1SurlController {
 
     private final Rq rq;
@@ -41,6 +43,7 @@ public class ApiV1SurlController {
 
     @PostMapping("")
     @ResponseBody
+    @Transactional
     public RsData<SurlAddRespBody> add(
             @RequestBody @Valid SurlAddReqBody reqBody
     ) {
@@ -51,7 +54,7 @@ public class ApiV1SurlController {
         return addRs.newDataOf(
                 new SurlAddRespBody(
                         new SurlDto(addRs.getData())
-                        )
+                )
         );
     }
 
@@ -60,13 +63,15 @@ public class ApiV1SurlController {
     public static class SurlGetRespBody {
         private SurlDto item;
     }
+
+    // /api/v1/surls/{id}
+    // /api/v1/surls/1
+    // /api/v1/surls?id=1
     @GetMapping("/{id}")
     public RsData<SurlGetRespBody> get(
             @PathVariable long id
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
-
-        surlService.increaseCount(surl);
 
         return RsData.of(
                 new SurlGetRespBody(
