@@ -30,6 +30,7 @@ public class SurlController {
 
         Member member = rq.getMember(); // 현재 브라우저로 로그인 한 회원 정보
 
+
         return surlService.add(member, body, url);
     }
 
