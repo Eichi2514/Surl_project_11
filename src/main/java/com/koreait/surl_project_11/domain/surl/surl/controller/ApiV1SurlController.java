@@ -115,6 +115,7 @@ public class ApiV1SurlController {
     // /api/v1/surls?id=1
     @GetMapping("")
     public RsData<SurlGetItemsRespBody> getItems() {
+
         Member member = rq.getMember();
 
         List<Surl> surls = surlService.findByAuthorOrderByIdDesc(member);
