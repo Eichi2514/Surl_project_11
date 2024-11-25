@@ -76,6 +76,12 @@ public class ApiV1SurlController {
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
+        Member member = rq.getMember();
+
+        if(!surl.getAuthor().equals(member)) {
+            throw new GlobalException("403-1", "권한이 없습니다");
+        }
+
         return RsData.of(
                 new SurlGetRespBody(
                         new SurlDto(surl)
@@ -90,6 +96,13 @@ public class ApiV1SurlController {
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
         surlService.delete(surl);
+
+        Member member = rq.getMember();
+
+        if(!surl.getAuthor().equals(member)) {
+            throw new GlobalException("403-1", "권한이 없습니다");
+        }
+
         return RsData.OK;
     }
 
@@ -136,9 +149,14 @@ public class ApiV1SurlController {
     @ResponseBody
     @Transactional
     public RsData<SurlModifyRespBody> modify(@PathVariable long id, @RequestBody @Valid SurlAddReqBody reqBody) {
-        Member member = rq.getMember(); // 현재 브라우저로 로그인 한 회원 정보
-
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        Member member = rq.getMember();
+
+        if(!surl.getAuthor().equals(member)) {
+//        if(!surl.getAuthor().getId().equals(member.getId())) {
+            throw new GlobalException("403-1", "권한이 없습니다");
+        }
 
         RsData<Surl> modifyRs = surlService.modify(surl, reqBody.body, reqBody.url);
 
