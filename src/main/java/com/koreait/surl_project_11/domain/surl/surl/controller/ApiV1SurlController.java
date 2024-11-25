@@ -117,4 +117,36 @@ public class ApiV1SurlController {
         );
     }
 
+    @AllArgsConstructor
+    @Getter
+    public static class SurlModifyReqBody {
+        @NotBlank
+        private String body;
+        @NotBlank
+        private String url;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class SurlModifyRespBody {
+        private SurlDto item;
+    }
+
+    @PutMapping("{id}")
+    @ResponseBody
+    @Transactional
+    public RsData<SurlModifyRespBody> modify(@PathVariable long id, @RequestBody @Valid SurlAddReqBody reqBody) {
+        Member member = rq.getMember(); // 현재 브라우저로 로그인 한 회원 정보
+
+        Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        RsData<Surl> modifyRs = surlService.modify(surl, reqBody.body, reqBody.url);
+
+        return modifyRs.newDataOf(
+                new SurlModifyRespBody(
+                        new SurlDto(modifyRs.getData())
+                )
+        );
+    }
+
 }
