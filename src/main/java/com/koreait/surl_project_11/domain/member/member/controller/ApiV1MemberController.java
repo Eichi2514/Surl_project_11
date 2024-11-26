@@ -90,7 +90,7 @@ public class ApiV1MemberController {
     // POST /api/v1/members
     @PostMapping("login")
     @Transactional
-    public RsData<MemberLoginRespBody> join(@RequestBody @Valid MemberLoginReqBody requestBody) {
+    public RsData<MemberLoginRespBody> login(@RequestBody @Valid MemberLoginReqBody requestBody) {
 
         Member member = memberService.findByUsername(requestBody.username).orElseThrow(() -> new GlobalException("401-1", "해당 회원은 없습니다"));
 
