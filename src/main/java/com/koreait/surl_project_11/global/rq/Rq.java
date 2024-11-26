@@ -18,16 +18,37 @@ public class Rq {
     private final HttpServletResponse resp;
     private final MemberService memberService;
 
+    private Member member;
+
 //    @Getter
 //    @Setter
 //    private Member member;
 
     public Member getMember() {
+        if(member != null) return member;
         String actorUsername = req.getParameter("actorUsername");
+        String actorPassword = req.getParameter("actorPassword");
 
-        if(Ut.str.isBlank(actorUsername)) throw new GlobalException("401-1", "인증정보 입력해줘");
+        if (actorUsername == null || actorPassword == null) {
+            String authorization = req.getHeader("Authorization");
+            if (authorization != null) {
+                authorization = authorization.substring("bearer ".length());
+                String[] authorizationBits = authorization.split(" ", 2);
+                actorUsername = authorizationBits[0];
+                actorPassword = authorizationBits.length == 2 ? authorizationBits[1] : null;
+            }
+        }
 
-        Member loginedMember = memberService.findByUsername(actorUsername).orElseThrow(() -> new GlobalException("401-2", "인증정보가 잘못됐어"));
+//        if(actorUsername == null) actorUsername = req.getHeader("actorUsername");
+//        if(actorPassword == null) actorPassword = req.getHeader("actorPassword");
+
+        if(Ut.str.isBlank(actorUsername)) throw new GlobalException("401-1", "인증정보(아이디) 입력해줘");
+        if(Ut.str.isBlank(actorPassword)) throw new GlobalException("401-2", "인증정보(비밀번호) 입력해줘");
+
+        Member loginedMember = memberService.findByUsername(actorUsername).orElseThrow(() -> new GlobalException("403-3", "해당 회원은 없어"));
+        if(!loginedMember.getPassword().equals(actorPassword)) throw new GlobalException("403-4", "비밀번호 틀림");
+
+        member = loginedMember;
 
         return loginedMember;
     }
