@@ -4,11 +4,14 @@ import com.koreait.surl_project_11.domain.member.member.entity.Member;
 import com.koreait.surl_project_11.domain.member.member.service.MemberService;
 import com.koreait.surl_project_11.global.exceptions.GlobalException;
 import com.koreait.surl_project_11.standard.util.Ut;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+
+import java.util.Arrays;
 
 @Component
 @RequestScope
@@ -26,8 +29,15 @@ public class Rq {
 
     public Member getMember() {
         if(member != null) return member;
-        String actorUsername = req.getParameter("actorUsername");
-        String actorPassword = req.getParameter("actorPassword");
+
+        String actorUsername = getCookieValue("actorUsername", null);
+        String actorPassword = getCookieValue("actorPassword", null);
+
+        System.err.println(actorUsername);
+        System.err.println(actorPassword);
+
+//        String actorUsername = req.getParameter("actorUsername");
+//        String actorPassword = req.getParameter("actorPassword");
 
         if (actorUsername == null || actorPassword == null) {
             String authorization = req.getHeader("Authorization");
@@ -51,6 +61,14 @@ public class Rq {
         member = loginedMember;
 
         return loginedMember;
+    }
+
+    private String getCookieValue(String cookieValue, String actorUsername) {
+        return Arrays.stream(req.getCookies())
+                .filter(cookie -> cookie.getName().equals(cookieValue))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(actorUsername);
     }
 
     public String getCurrentUrlPath() {
