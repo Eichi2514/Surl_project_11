@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public class Rq {
     private final HttpServletRequest req;
     private final HttpServletResponse resp;
     private final MemberService memberService;
+    private final LocalValidatorFactoryBean defaultValidator;
 
     private Member member;
 
@@ -63,12 +65,14 @@ public class Rq {
         return loginedMember;
     }
 
-    private String getCookieValue(String cookieValue, String actorUsername) {
+    private String getCookieValue(String cookieValue, String defaultValue) {
+        if(req.getCookies() == null) return defaultValue;
+
         return Arrays.stream(req.getCookies())
                 .filter(cookie -> cookie.getName().equals(cookieValue))
                 .findFirst()
                 .map(Cookie::getValue)
-                .orElse(actorUsername);
+                .orElse(defaultValue);
     }
 
     public String getCurrentUrlPath() {
@@ -77,5 +81,19 @@ public class Rq {
 
     public void setStatusCode(int statusCode) {
         resp.setStatus(statusCode);
+    }
+
+    public void removeCookie(String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        resp.addCookie(cookie);
+    }
+
+    public void setCooke(String cookieName, String value) {
+        Cookie cookie = new Cookie(cookieName, value);
+        cookie.setMaxAge(60 * 60 * 24);
+        cookie.setPath("/");
+        resp.addCookie(cookie);
     }
 }
