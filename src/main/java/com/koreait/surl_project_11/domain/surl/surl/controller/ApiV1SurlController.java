@@ -2,6 +2,7 @@ package com.koreait.surl_project_11.domain.surl.surl.controller;
 
 import com.koreait.surl_project_11.domain.auth.auth.service.AuthService;
 import com.koreait.surl_project_11.domain.member.member.entity.Member;
+import com.koreait.surl_project_11.domain.member.member.service.MemberService;
 import com.koreait.surl_project_11.domain.surl.surl.dto.SurlDto;
 import com.koreait.surl_project_11.domain.surl.surl.entity.Surl;
 import com.koreait.surl_project_11.domain.surl.surl.service.SurlService;
@@ -9,6 +10,8 @@ import com.koreait.surl_project_11.global.exceptions.GlobalException;
 import com.koreait.surl_project_11.global.rq.Rq;
 import com.koreait.surl_project_11.global.rsData.RsData;
 import com.koreait.surl_project_11.standard.dto.Empty;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -22,14 +25,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/surls")
+//@RequestMapping(value = "/api/v1/surls", produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
+@Tag(name = "ApiV1SurlController", description = "Surl CRUD 컨트롤러")
 public class ApiV1SurlController {
 
     private final Rq rq;
     private final SurlService surlService;
     private final AuthService authService;
+    private final MemberService memberService;
 
     @AllArgsConstructor
     @Getter
@@ -49,6 +55,7 @@ public class ApiV1SurlController {
     @PostMapping("")
     @ResponseBody
     @Transactional
+    @Operation(summary = "생성")
     public RsData<SurlAddRespBody> add(
             @RequestBody @Valid SurlAddReqBody reqBody
     ) {
@@ -73,14 +80,16 @@ public class ApiV1SurlController {
     // /api/v1/surls/1
     // /api/v1/surls?id=1
     @GetMapping("/{id}")
+    @Operation(summary = "단건조회")
     public RsData<SurlGetRespBody> get(
             @PathVariable long id
     ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
-        Member member = rq.getMember();
+        rq.getMember(); // member 로딩
+        rq.getMember(); // 빠르게 했으면 좋겠어
 
-        authService.chcekCanGetSurl(member, surl);
+        authService.checkCanGetSurl(rq.getMember(), surl);
 
         return RsData.of(
                 new SurlGetRespBody(
@@ -89,36 +98,22 @@ public class ApiV1SurlController {
         );
     }
 
-    @DeleteMapping("/{id}")
-    @Transactional
-    public RsData<Empty> delete(
-            @PathVariable long id
-    ) {
-        Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
-        surlService.delete(surl);
-
-        Member member = rq.getMember();
-
-        authService.chcekCanDeleteSurl(member, surl);
-
-        return RsData.OK;
-    }
-
     @AllArgsConstructor
     @Getter
     public static class SurlGetItemsRespBody {
         private List<SurlDto> items;
     }
 
-    // /api/v1/surls/{id}
-    // /api/v1/surls/1
-    // /api/v1/surls?id=1
     @GetMapping("")
+    @Operation(summary = "다건조회")
     public RsData<SurlGetItemsRespBody> getItems() {
 
         Member member = rq.getMember();
 
         List<Surl> surls = surlService.findByAuthorOrderByIdDesc(member);
+
+        // Page
+        // QueryDSL
 
         return RsData.of(
                 new SurlGetItemsRespBody(
@@ -127,6 +122,22 @@ public class ApiV1SurlController {
                                 .toList()
                 )
         );
+    }
+
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    @Operation(summary = "삭제")
+    public RsData<Empty> delete(
+            @PathVariable long id
+    ) {
+        Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
+
+        authService.checkCanDeleteSurl(rq.getMember(), surl);
+
+        surlService.delete(surl);
+
+        return RsData.OK;
     }
 
     @AllArgsConstructor
@@ -144,20 +155,23 @@ public class ApiV1SurlController {
         private SurlDto item;
     }
 
-    @PutMapping("{id}")
-    @ResponseBody
+    @PutMapping("/{id}")
     @Transactional
-    public RsData<SurlModifyRespBody> modify(@PathVariable long id, @RequestBody @Valid SurlAddReqBody reqBody) {
+    @Operation(summary = "수정")
+    public RsData<SurlModifyRespBody> modify(
+            @PathVariable long id,
+            @RequestBody @Valid SurlModifyReqBody reqBody
+    ) {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
-        Member member = rq.getMember();
-
-        authService.chcekCanModifySurl(member, surl);
+        authService.checkCanModifySurl(rq.getMember(), surl);
 
         RsData<Surl> modifyRs = surlService.modify(surl, reqBody.body, reqBody.url);
 
         return modifyRs.newDataOf(
-                new SurlModifyRespBody(
+                new
+
+                        SurlModifyRespBody(
                         new SurlDto(modifyRs.getData())
                 )
         );
