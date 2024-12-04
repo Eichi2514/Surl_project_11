@@ -1,6 +1,7 @@
 <script lang="ts">
-  async function submitLoginForm(this: HTMLFormElement) {
-    const form: HTMLFormElement = this;
+	async function submitLoginForm(this: HTMLFormElement) {
+		const form: HTMLFormElement = this;
+
 		form.username.value = form.username.value.trim();
 		if (form.username.value.length === 0) {
 			alert('username 입력해');
@@ -15,7 +16,7 @@
 		}
 		const rs = await fetch('http://localhost:8070/api/v1/members/login', {
 			method: 'POST',
-			//credentials: 'include', : 타 도메인간의 쿠키 통신이 가능하도록
+			credentials: 'include', //: 타 도메인간의 쿠키 통신이 가능하도록
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -25,26 +26,26 @@
 			})
 		}).then((res) => res.json());
 		console.log(rs);
-  }
+	}
 </script>
 
 <form on:submit|preventDefault={submitLoginForm}>
-  <div>
-    <label>
-      <span>username</span>
-      <input type="text" name="username" placeholder="username 써"/>
-    </label>
-  </div>
-  <div>
-    <label>
-      <span>password</span>
-      <input type="text" name="password" placeholder="password 써"/>
-    </label>
-  </div>
-  <div>
-    <label>
-      <span>로그인</span>
-      <input type="submit" value="로그인">
-    </label>
-  </div>
+	<div>
+		<label>
+			<span>username</span>
+			<input type="text" name="username" placeholder="username 써" />
+		</label>
+	</div>
+	<div>
+		<label>
+			<span>password</span>
+			<input type="text" name="password" placeholder="password 써" />
+		</label>
+	</div>
+	<div>
+		<label>
+			<span>로그인</span>
+			<input type="submit" value="로그인" />
+		</label>
+	</div>
 </form>
