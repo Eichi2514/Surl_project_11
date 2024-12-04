@@ -2,27 +2,26 @@ server:
   port: 8080
   shutdown: graceful
 spring:
-   autoconfigure:
-     exclude:
-   lifecycle:
-     # 스프링부트가 종료 요청을 받은 후 기다려줄 수 있는 시간
-     timeout-per-shutdown-phase: 1h
-   datasource:
-     url: jdbc:mysql://172.17.0.1:3306/surl_prod
-     username: root
-     password: 1234
-     driver-class-name: com.mysql.cj.jdbc.Driver
-   data:
-     redis:
-       host: 127.17.0.1
-       port: 6379
-       password: ${custom.secret.spring.data.redis.password}
-   jpa:
+  autoconfigure:
+    exclude:
+  lifecycle:
+    # 스프링부트가 종료 요청을 받은 후 기다려줄 수 있는 시간
+    timeout-per-shutdown-phase: 1h
+  datasource:
+    url: jdbc:mysql://172.17.0.1:3306/surl_prod
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: 172.17.0.1
+      port: 6379
+      password: ${custom.secret.spring.data.redis.password}
+  jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        default_batch_fetch_size: 100
         format_sql: false
         highlight_sql: false
         use_sql_comments: false
@@ -35,4 +34,7 @@ logging:
     org.springframework.transaction.interceptor: INFO
 custom:
   site:
-    name: "My Site Prod"
+    name: "SURL"
+    cookieDomain: "${custom.prod.cookieDomain}"
+    frontUrl: "${custom.prod.frontUrl}"
+    backUrl: "${custom.prod.backUrl}"

@@ -14,6 +14,10 @@ public class AppConfig {
 
     @Getter
     public static ObjectMapper objectMapper;
+    @Getter
+    private static String jwtSecretKey;
+    @Getter
+    private static long accessTokenExpirationSec;
 
     @Autowired
     public void setObjectMapper(ObjectMapper objectMapper) {
@@ -25,20 +29,33 @@ public class AppConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Getter
-    private static String jwtSecretKey;
-
     @Value("${custom.secret.jwt.secretKey}")
     public void setJwtSecretKey(String jwtSecretKey) {
         this.jwtSecretKey = jwtSecretKey;
     }
 
-    @Getter
-    private static long accessTokenExpirationSec;
-
     @Value("${custom.accessToken.expirationSec}")
     public void setJwtSecretKey(long accessTokenExpirationSec) {
         this.accessTokenExpirationSec = accessTokenExpirationSec;
+    }
+
+    @Getter
+    private static String siteFrontUrl;
+    @Value("${custom.site.frontUrl}")
+    public void setSiteFrontUrl(String siteFrontUrl) {
+        this.siteFrontUrl = siteFrontUrl;
+    }
+    @Getter
+    private static String siteBackUrl;
+    @Value("${custom.site.backUrl}")
+    public void setSiteBackUrl(String siteBackUrl) {
+        this.siteBackUrl = siteBackUrl;
+    }
+    @Getter
+    private static String siteCookieDomain;
+    @Value("${custom.site.cookieDomain}")
+    public void setSiteCookieDomain(String siteCookieDomain) {
+        this.siteCookieDomain = siteCookieDomain;
     }
 
 }
