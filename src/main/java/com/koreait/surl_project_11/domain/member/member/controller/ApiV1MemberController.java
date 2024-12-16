@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,23 +37,6 @@ public class ApiV1MemberController {
     private final AuthService authService;
     private final AuthTokenService authTokenService;
 
-    @AllArgsConstructor
-    @Getter
-    public static class MemberJoinReqBody {
-        @NotBlank
-        private String username;
-        @NotBlank
-        private String password;
-        @NotBlank
-        private String nickname;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class MemberJoinRespBody {
-        MemberDto item;
-    }
-
     // POST /api/v1/members
     @PostMapping("")
     @Transactional
@@ -69,21 +53,6 @@ public class ApiV1MemberController {
                         )
                 )
         );
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class MemberLoginReqBody {
-        @NotBlank
-        private String username;
-        @NotBlank
-        private String password;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class MemberLoginRespBody {
-        MemberDto item;
     }
 
     @PostMapping("/login")
@@ -124,8 +93,10 @@ public class ApiV1MemberController {
     @AllArgsConstructor
     @Getter
     public static class MemberMeRespBody {
+        @NonNull
         MemberDto item;
     }
+
     @GetMapping("/me")
     @Transactional
     @Operation(summary = "내 정보", description = "현재 로그인한 회원의 정보")
@@ -135,6 +106,40 @@ public class ApiV1MemberController {
                         new MemberDto(rq.getMember())
                 )
         );
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class MemberJoinReqBody {
+        @NotBlank
+        private String username;
+        @NotBlank
+        private String password;
+        @NotBlank
+        private String nickname;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class MemberJoinRespBody {
+        @NonNull
+        MemberDto item;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class MemberLoginReqBody {
+        @NotBlank
+        private String username;
+        @NotBlank
+        private String password;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class MemberLoginRespBody {
+        @NonNull
+        MemberDto item;
     }
 
 }
